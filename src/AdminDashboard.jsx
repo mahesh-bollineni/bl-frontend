@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const API_BASE = "http://localhost:8080/api/products";
-const USER_API = "http://localhost:8080/api/users";
+const BASE_URL = (import.meta.env.VITE_API_URL || "http://localhost:8080/api");
+const API_BASE = `${BASE_URL}/products`;
+const USER_API = `${BASE_URL}/users`;
 
 function AdminDashboard({ products, loadData, onLogout }) {
   const [view, setView] = useState('inventory'); 
