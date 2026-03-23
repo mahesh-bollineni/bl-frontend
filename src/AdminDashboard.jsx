@@ -62,7 +62,7 @@ const AdminDashboard = ({ products, loadData, onLogout }) => {
                 {view === 'inventory' ? (
                   <><th>Preview</th><th>Item Name</th><th>Price</th><th>Seller</th><th style={{textAlign:'center'}}>Action</th></>
                 ) : (
-                  <><th>Avatar</th><th>Username</th><th>Email</th><th>Auth Role</th><th style={{textAlign:'center'}}>Action</th></>
+                  <><th>Avatar</th><th>Username</th><th>Email</th><th>WhatsApp</th><th>Address</th><th>Role</th><th style={{textAlign:'center'}}>Action</th></>
                 )}
               </tr>
             </thead>
@@ -92,7 +92,9 @@ const AdminDashboard = ({ products, loadData, onLogout }) => {
                       </div>
                     </td>
                     <td><b>{u.username}</b></td>
-                    <td>{u.email}</td>
+                    <td style={{fontSize:'0.8rem'}}>{u.email}</td>
+                    <td style={{color:'#22c55e', fontWeight:'bold'}}>{u.whatsappNumber || "N/A"}</td>
+                    <td style={{fontSize:'0.8rem', maxWidth:'150px'}}>{u.address || "No Address Set"}</td>
                     <td style={{ color: '#94a3b8' }}>{u.role}</td>
                     <td style={{textAlign:'center'}}>
                       {u.role !== 'ADMIN' && <button onClick={() => deleteUser(u.id)} className="admin-del-btn">Expel</button>}
