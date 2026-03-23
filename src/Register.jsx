@@ -1,24 +1,67 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { userApi } from './services/api';
+import './styles/Auth.css';
 
-function Register() {
-  const [form, setForm] = useState({ username: '', email: '', password: '', whatsappNumber: '' });
-  const handleRegister = (e) => {
+const Register = () => {
+  const [form, setForm] = useState({ 
+    username: '', 
+    email: '', 
+    password: '', 
+    whatsappNumber: '' 
+  });
+  const [isRegistering, setIsRegistering] = useState(false);
+
+  const handleRegister = async (e) => {
     e.preventDefault();
-    const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api";
-    axios.post(`${BASE_URL}/users/register`, form).then(() => alert("Success! Now Login."));
+    setIsRegistering(true);
+
+    try {
+      await userApi.register(form);
+      alert("Success! Now Login and join the Loft.");
+      window.location.reload(); // Refresh views
+    } catch (err) {
+      alert("Registration failed: Check all fields.");
+      console.error(err);
+    } finally {
+      setIsRegistering(false);
+    }
   };
+
+  const updateForm = (key, value) => setForm(f => ({ ...f, [key]: value }));
+
   return (
-    <form onSubmit={handleRegister} style={{display:'flex', flexDirection:'column', gap:10}}>
+    <form onSubmit={handleRegister} className="auth-form">
       <h3>Register</h3>
-      <input placeholder="Username" onChange={e => setForm({...form, username: e.target.value})} style={inSt} required />
-      <input placeholder="Email" onChange={e => setForm({...form, email: e.target.value})} style={inSt} required />
-      <input type="password" placeholder="Password" onChange={e => setForm({...form, password: e.target.value})} style={inSt} required />
-      <input placeholder="WhatsApp" onChange={e => setForm({...form, whatsappNumber: e.target.value})} style={inSt} required />
-      <button type="submit" style={btnSt}>Join Loft</button>
+      <input 
+        placeholder="Username" 
+        onChange={e => updateForm('username', e.target.value)} 
+        className="auth-input" 
+        required 
+      />
+      <input 
+        placeholder="Email" 
+        onChange={e => updateForm('email', e.target.value)} 
+        className="auth-input" 
+        required 
+      />
+      <input 
+        type="password" 
+        placeholder="Password" 
+        onChange={e => updateForm('password', e.target.value)} 
+        className="auth-input" 
+        required 
+      />
+      <input 
+        placeholder="WhatsApp" 
+        onChange={e => updateForm('whatsappNumber', e.target.value)} 
+        className="auth-input" 
+        required 
+      />
+      <button type="submit" className="auth-btn" disabled={isRegistering}>
+        {isRegistering ? "Joining..." : "Join Loft"}
+      </button>
     </form>
   );
-}
-const inSt = { padding: 10, borderRadius: 8, border: '1px solid #ddd' };
-const btnSt = { padding: 10, background: '#0f172a', color: '#fff', border: 'none', borderRadius: 8 };
+};
+
 export default Register;

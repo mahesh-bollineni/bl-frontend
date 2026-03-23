@@ -1,64 +1,65 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { userApi } from './services/api';
+import './styles/Auth.css';
 
-function Login({ onLoginSuccess }) {
+const Login = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    
-    // Trim values to avoid hidden spaces
-    const payload = { 
+    setIsLoading(true);
+
+    try {
+      const payload = { 
         email: email.trim(), 
         password: password 
-    };
+      };
 
-    const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api";
-    axios.post(`${BASE_URL}/users/login`, payload)
-      .then(res => {
-        onLoginSuccess(res.data);
-        if(res.data.role === 'ADMIN') {
-            alert("God Mode Activated: Welcome Mahesh!");
-        }
-      })
-      .catch(err => {
-        console.error(err);
-        alert("Login Failed: " + (err.response?.data || "Server Offline"));
-      });
+      const { data } = await userApi.login(payload);
+      
+      onLoginSuccess(data);
+      if (data.role === 'ADMIN') {
+        alert("God Mode Activated: Welcome Mahesh!");
+      }
+    } catch (err) {
+      console.error("Login attempt failed:", err);
+      alert("Login Failed: " + (err.response?.data?.message || err.response?.data || "Server Offline"));
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <form onSubmit={handleLogin} style={st.form}>
-      <h3 style={{color: '#0f172a', marginBottom: '10px'}}>Sign In</h3>
-      <p style={{fontSize: '0.8rem', color: '#64748b', marginBottom: '15px'}}>Access the BuyLoft Marketplace</p>
+    <form onSubmit={handleLogin} className="auth-form">
+      <h3 style={{ color: '#0f172a', marginBottom: '10px' }}>Sign In</h3>
+      <p style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '15px' }}>Access the BuyLoft Marketplace</p>
       
       <input 
         type="email" 
         placeholder="Email" 
         autoComplete="email"
+        value={email}
         onChange={e => setEmail(e.target.value)} 
-        style={st.in} 
+        className="auth-input"
         required 
       />
       <input 
         type="password" 
         placeholder="Password" 
         autoComplete="current-password"
+        value={password}
         onChange={e => setPassword(e.target.value)} 
-        style={st.in} 
+        className="auth-input"
         required 
       />
       
-      <button type="submit" style={st.btn}>Login</button>
+      <button type="submit" className="auth-btn" disabled={isLoading}>
+        {isLoading ? "Signing in..." : "Login"}
+      </button>
     </form>
   );
-}
-
-const st = {
-  form: { display: 'flex', flexDirection: 'column', gap: '12px' },
-  in: { padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0', outline: 'none', color: '#000' },
-  btn: { padding: '12px', background: '#fbbf24', color: '#000', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', marginTop: '10px' }
 };
 
 export default Login;

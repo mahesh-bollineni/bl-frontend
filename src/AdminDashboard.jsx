@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { productApi, userApi } from './services/api';
+import './styles/Admin.css';
 
-const BASE_URL = (import.meta.env.VITE_API_URL || "http://localhost:8080/api");
-const API_BASE = `${BASE_URL}/products`;
-const USER_API = `${BASE_URL}/users`;
-
-function AdminDashboard({ products, loadData, onLogout }) {
+const AdminDashboard = ({ products, loadData, onLogout }) => {
   const [view, setView] = useState('inventory'); 
   const [users, setUsers] = useState([]);
 
-  const fetchUsers = () => {
-    axios.get(`${USER_API}/all`).then(res => setUsers(res.data));
+  const fetchUsers = async () => {
+    try {
+      const { data } = await userApi.getAll();
+      setUsers(data);
+    } catch (err) {
+      console.error("Critical: Could not connect to User Management Database.");
+    }
   };
 
   useEffect(() => {
@@ -18,62 +20,82 @@ function AdminDashboard({ products, loadData, onLogout }) {
     else loadData();
   }, [view, loadData]);
 
-  const deleteProduct = (id) => {
+  const deleteProduct = async (id) => {
     if (window.confirm("GOD MODE: Delete this listing?")) {
-      axios.delete(`${API_BASE}/${id}`).then(() => loadData());
+      await productApi.delete(id);
+      loadData();
     }
   };
 
-  const deleteUser = (id) => {
+  const deleteUser = async (id) => {
     if (window.confirm("GOD MODE: Permanently delete this user?")) {
-      axios.delete(`${USER_API}/${id}`).then(() => fetchUsers());
+      await userApi.delete(id);
+      fetchUsers();
     }
   };
 
   return (
-    <div style={st.adminPage}>
-      <div style={st.sidebar}>
-        <h2 style={{color:'#fbbf24'}}>BL ADMIN</h2>
-        <button style={view === 'inventory' ? st.navBtnActive : st.navBtn} onClick={() => setView('inventory')}>📦 Inventory</button>
-        <button style={view === 'users' ? st.navBtnActive : st.navBtn} onClick={() => setView('users')}>👥 Users</button>
-        <button onClick={onLogout} style={st.logoutBtn}>Logout</button>
+    <div className="admin-page">
+      <div className="sidebar">
+        <h2 className="sidebar-title">BL ADMIN</h2>
+        <button 
+          className={`nav-btn ${view === 'inventory' ? 'active' : ''}`} 
+          onClick={() => setView('inventory')}>
+          📦 Inventory
+        </button>
+        <button 
+          className={`nav-btn ${view === 'users' ? 'active' : ''}`} 
+          onClick={() => setView('users')}>
+          👥 Users
+        </button>
+        <button onClick={onLogout} className="sidebar-logout">Logout</button>
       </div>
 
-      <div style={st.main}>
-        <h1 style={{color:'#fbbf24'}}>{view === 'inventory' ? "Global Inventory" : "User Management"}</h1>
-        <div style={st.tableCard}>
-          <table style={st.table}>
+      <div className="main-admin">
+        <h1 style={{ color: '#fbbf24', fontSize: '2.5rem' }}>
+          {view === 'inventory' ? "Inventory Console" : "Intelligence Portal"}
+        </h1>
+        <div className="table-card">
+          <table className="admin-table">
             <thead>
-              <tr style={st.tableHead}>
+              <tr>
                 {view === 'inventory' ? (
-                  <><th>ID</th><th>Item</th><th>Price</th><th>Seller</th><th>Action</th></>
+                  <><th>Preview</th><th>Item Name</th><th>Price</th><th>Seller</th><th style={{textAlign:'center'}}>Action</th></>
                 ) : (
-                  <><th>ID</th><th>Username</th><th>Email</th><th>Password</th><th>Action</th></>
+                  <><th>Avatar</th><th>Username</th><th>Email</th><th>Auth Role</th><th style={{textAlign:'center'}}>Action</th></>
                 )}
               </tr>
             </thead>
             <tbody>
               {view === 'inventory' ? (
                 products.map(p => (
-                  <tr key={p.id} style={st.tableRow}>
-                    <td>{p.id}</td><td>{p.title}</td><td style={{color:'#fbbf24'}}>₹{p.price}</td><td>{p.seller?.username}</td>
-                    <td><button onClick={() => deleteProduct(p.id)} style={st.delBtn}>Remove</button></td>
+                  <tr key={p.id}>
+                    <td>
+                      <img 
+                        src={`data:${p.imageType};base64,${p.imageData}`} 
+                        alt="p" 
+                        style={{width: 50, height: 50, borderRadius: 10, objectFit:'cover', border: '1px solid #fbbf24'}} 
+                      />
+                    </td>
+                    <td>{p.title}</td>
+                    <td style={{ color: '#fbbf24', fontWeight: 'bold' }}>₹{p.price}</td>
+                    <td>{p.seller?.username}</td>
+                    <td style={{textAlign:'center'}}><button onClick={() => deleteProduct(p.id)} className="admin-del-btn">Remove</button></td>
                   </tr>
                 ))
               ) : (
                 users.map(u => (
-                  <tr key={u.id} style={st.tableRow}>
-                    <td>{u.id}</td>
+                  <tr key={u.id}>
+                    <td>
+                      <div style={{width: 40, height: 40, borderRadius: '50%', background: '#fbbf24', color: '#000', display: 'flex', alignItems: 'center', justifyContent:'center', fontWeight:'bold'}}>
+                        {u.username.charAt(0)}
+                      </div>
+                    </td>
                     <td><b>{u.username}</b></td>
                     <td>{u.email}</td>
-                    <td 
-                      style={{color:'#fbbf24', cursor:'pointer'}} 
-                      onClick={(e) => e.target.innerText = u.password}
-                    >
-                      ********
-                    </td>
-                    <td>
-                      {u.role !== 'ADMIN' && <button onClick={() => deleteUser(u.id)} style={st.delBtn}>Delete</button>}
+                    <td style={{ color: '#94a3b8' }}>{u.role}</td>
+                    <td style={{textAlign:'center'}}>
+                      {u.role !== 'ADMIN' && <button onClick={() => deleteUser(u.id)} className="admin-del-btn">Expel</button>}
                     </td>
                   </tr>
                 ))
@@ -84,20 +106,6 @@ function AdminDashboard({ products, loadData, onLogout }) {
       </div>
     </div>
   );
-}
-
-const st = {
-  adminPage: { display:'flex', minHeight:'100vh', background:'#0f172a', color:'#fff', fontFamily:"'Inter', sans-serif" },
-  sidebar: { width:'250px', background:'#1e293b', padding:'30px', borderRight:'2px solid #fbbf24', display:'flex', flexDirection:'column', gap:'15px' },
-  navBtn: { padding:'12px', background:'transparent', color:'#94a3b8', border:'none', textAlign:'left', cursor:'pointer', fontWeight:'bold' },
-  navBtnActive: { padding:'12px', background:'#fbbf24', color:'#000', border:'none', borderRadius:'8px', textAlign:'left', cursor:'pointer', fontWeight:'bold' },
-  logoutBtn: { marginTop:'auto', padding:'12px', background:'#ef4444', color:'#fff', border:'none', borderRadius:'8px', cursor:'pointer', fontWeight:'bold' },
-  main: { flex:1, padding:'40px' },
-  tableCard: { background:'#1e293b', padding:'20px', borderRadius:'15px', border:'1px solid #334155' },
-  table: { width:'100%', borderCollapse:'collapse', textAlign:'left' },
-  tableHead: { borderBottom:'2px solid #334155', color:'#94a3b8' },
-  tableRow: { borderBottom:'1px solid #334155', height:'50px' },
-  delBtn: { background:'#ef4444', color:'#fff', border: 'none', padding: '5px 10px', borderRadius: 5, cursor: 'pointer' }
 };
 
 export default AdminDashboard;

@@ -1,0 +1,73 @@
+/* AUTH & LOGIN STYLES */
+.auth-page {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #0f172a;
+}
+
+.auth-card {
+  padding: 50px;
+  background: #fff;
+  border-radius: 30px;
+  width: 400px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+.logo-badge {
+  background: #fbbf24;
+  width: 65px;
+  height: 65px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 25px;
+  color: #0f172a;
+  font-weight: 900;
+  font-size: 1.4rem;
+  box-shadow: 0 8px 15px rgba(251, 191, 36, 0.3);
+  border: 3px solid #0f172a;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.auth-input {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  outline: none;
+  color: #000;
+  font-size: 1rem;
+}
+
+.auth-btn {
+  padding: 12px;
+  background: #fbbf24;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: opacity 0.2s;
+}
+
+.auth-btn:hover {
+  opacity: 0.9;
+}
+
+.back-btn {
+  margin-top: 20px;
+  background: none;
+  border: none;
+  color: #64748b;
+  text-decoration: underline;
+  cursor: pointer;
+}
