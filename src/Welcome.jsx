@@ -64,7 +64,7 @@ function Welcome({ onNavigate }) {
 const st = {
   scrollPage: { backgroundColor: '#fff', fontFamily: "'Inter', sans-serif" },
   heroSection: { height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', color: '#fff', textAlign: 'center', padding: '20px', position: 'relative' },
-  logoBadge: { width: '90px', height: '90px', background: '#fff', color: '#0f172a', borderRadius: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', fontSize: '1.8rem', fontWeight: '900' },
+  logoBadge: { width: '85px', height: '85px', background: '#fbbf24', color: '#0f172a', borderRadius: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 25px', fontSize: '2.5rem', fontWeight: '900', boxShadow: '0 15px 35px rgba(251, 191, 36, 0.4)', border: '4px solid #fff' },
   hugeTitle: { fontSize: '6rem', fontWeight: '900', margin: 0, letterSpacing: '-4px' },
   heroSubtitle: { fontSize: '1.5rem', color: '#94a3b8', maxWidth: '600px', margin: '20px 0 40px' },
   scrollIndicator: { position: 'absolute', bottom: '30px', color: '#64748b' },

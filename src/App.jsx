@@ -202,7 +202,7 @@ const st = {
   delBtn: { background: '#ef4444', color: '#fff', border: 'none', padding: '5px 15px', borderRadius: '5px', cursor: 'pointer' },
   logoutBtn: { background: '#ef4444', color: '#fff', border: 'none', padding: '8px 20px', borderRadius: '50px', cursor: 'pointer', fontWeight: 'bold' },
   iconBtn: { background: '#334155', border: 'none', width: '45px', height: '45px', borderRadius: '12px', fontSize: '1.2rem', cursor: 'pointer' },
-  logoBadge: { background: '#fbbf24', width: '60px', height: '60px', borderRadius: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', color: '#000', fontWeight: 'bold' },
+  logoBadge: { background: '#fbbf24', width: '65px', height: '65px', borderRadius: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 25px', color: '#0f172a', fontWeight: '900', fontSize: '1.4rem', boxShadow: '0 8px 15px rgba(251, 191, 36, 0.3)', border: '3px solid #0f172a' },
   authPage: { height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', background: '#0f172a' },
   authCard: { padding: '50px', background: '#fff', borderRadius: '30px', width: '400px', textAlign: 'center' },
   backBtn: { marginTop: '20px', background: 'none', border: 'none', color: '#64748b', textDecoration: 'underline', cursor: 'pointer' },
