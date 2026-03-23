@@ -1,5 +1,5 @@
 import React from 'react';
-import './styles/App.css';
+import '../styles/App.css';
 
 const Navbar = ({ view, setView, searchMode, setSearchMode, setSearchTerm, onLogout }) => (
   <nav className="navbar">
