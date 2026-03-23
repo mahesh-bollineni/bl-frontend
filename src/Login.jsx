@@ -14,7 +14,8 @@ function Login({ onLoginSuccess }) {
         password: password 
     };
 
-    axios.post('http://localhost:8080/api/users/login', payload)
+    const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api";
+    axios.post(`${BASE_URL}/users/login`, payload)
       .then(res => {
         onLoginSuccess(res.data);
         if(res.data.role === 'ADMIN') {

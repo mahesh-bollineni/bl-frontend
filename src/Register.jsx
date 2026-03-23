@@ -5,7 +5,8 @@ function Register() {
   const [form, setForm] = useState({ username: '', email: '', password: '', whatsappNumber: '' });
   const handleRegister = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:8080/api/users/register', form).then(() => alert("Success! Now Login."));
+    const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api";
+    axios.post(`${BASE_URL}/users/register`, form).then(() => alert("Success! Now Login."));
   };
   return (
     <form onSubmit={handleRegister} style={{display:'flex', flexDirection:'column', gap:10}}>
